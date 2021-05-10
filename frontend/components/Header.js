@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import Nav from './Nav';
-import styled from 'styled-components';
+import Link from "next/link";
+import Nav from "./Nav";
+import styled from "styled-components";
 
 const Logo = styled.h1`
   background-color: red;
@@ -8,7 +8,7 @@ const Logo = styled.h1`
   margin-left: 2rem;
   position: relative;
   z-index: 2;
-  transform: skew(-7deg); 
+  transform: skew(-7deg);
 
   a {
     color: white;
@@ -24,7 +24,7 @@ const HeaderStyles = styled.header`
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
   }
 
   .sub-bar {
@@ -32,22 +32,20 @@ const HeaderStyles = styled.header`
     display: grid;
     grid-template-columns: auto 1fr;
   }
-`
+`;
 
 export default function Header() {
   return (
     <HeaderStyles>
       <div className="bar">
         <Logo>
-          <Link href="/">
-            iVolunteer
-          </Link>
+          <Link href="/">iVolunteer</Link>
         </Logo>
+        <Nav />
       </div>
       <div className="sub-bar">
-        Search
+        <p>Search</p>
       </div>
-      <Nav/>
     </HeaderStyles>
-  )
+  );
 }

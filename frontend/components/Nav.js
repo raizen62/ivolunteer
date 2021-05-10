@@ -1,12 +1,13 @@
 import Link from "next/link";
+import NavStyles from "./styles/NavStyles";
 
 export default function Nav() {
   return (
-    <nav>
+    <NavStyles>
       <Link href="/events">Events</Link>
       <Link href="/calendar">Calendar</Link>
       <Link href="/dashboard">Dashboard</Link>
       <Link href="/team">Team</Link>
-    </nav>
+    </NavStyles>
   )
 }

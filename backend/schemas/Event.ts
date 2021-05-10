@@ -4,6 +4,7 @@ import { integer, relationship, select, text } from '@keystone-next/fields';
 export const Event = list({
   fields: {
     name: text({ isRequired: true }),
+    type: text(),
     description: text({
       ui: {
         displayMode: 'textarea',
