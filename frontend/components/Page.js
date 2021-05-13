@@ -32,6 +32,16 @@ const GlobalStyles = createGlobalStyle`
   a {
     text-decoration: none;
     color: var(--black);
+
+    &.button {
+      width: auto;
+      background: red;
+      color: white;
+      border: 0;
+      font-size: 2rem;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+    }
   }
 
   a:hover {
@@ -41,7 +51,7 @@ const GlobalStyles = createGlobalStyle`
   *, *:before, *:after {
     box-sizing: inherit;
   }
-`
+`;
 
 const InnerStyles = styled.div`
   max-width: var(--maxWidth);
@@ -49,14 +59,12 @@ const InnerStyles = styled.div`
   padding: 2rem;
 `;
 
-export default function Page({children}) {
+export default function Page({ children }) {
   return (
     <>
       <GlobalStyles />
       <Header />
-      <InnerStyles>
-        {children}
-      </InnerStyles>
+      <InnerStyles>{children}</InnerStyles>
     </>
-  )
+  );
 }

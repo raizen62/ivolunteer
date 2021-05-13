@@ -1,70 +1,89 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import Router from "next/router";
 import useForm from "../lib/useForm";
 import DisplayError from "./ErrorMessage";
-import { ALL_EVENTS_QUERY } from "./Events";
 import Form from "./styles/Form";
 
-const CREATE_EVENT_MUTATION = gql`
-  mutation CREATE_PRODUCT_MUTATION(
-    $name: String!
-    $description: String!
-    $hours: Int!
-    $image: Upload
-    $type: String!
+const SINGLE_EVENT_QUERY = gql`
+  query SINGLE_EVENT_QUERY($id: ID!) {
+    Event(where: { id: $id }) {
+      id
+      name
+      description
+      hours
+      type
+    }
+  }
+`;
+
+const UPDATE_EVENT_MUTATION = gql`
+  mutation UPDATE_EVENT_MUTATION(
+    $id: ID!
+    $name: String
+    $description: String
+    $hours: Int
+    $type: String
   ) {
-    createEvent(
+    updateEvent(
+      id: $id
       data: {
         name: $name
         description: $description
         hours: $hours
-        photo: { create: { image: $image, altText: $name } }
         type: $type
       }
     ) {
       id
       name
       description
+      hours
+      type
     }
   }
 `;
 
-export default function CreateEvent() {
-  const { inputs, handleChange, clearForm, resetForm } = useForm({
-    name: "",
-    type: "",
-    image: "",
-    description: "",
-    hours: 1
+export default function UpdateEvent({ id }) {
+  const { data, error, loading } = useQuery(SINGLE_EVENT_QUERY, {
+    variables: {
+      id,
+    },
   });
 
-  const [createEvent, { loading, error, data }] = useMutation(
-    CREATE_EVENT_MUTATION,
-    {
-      variables: inputs,
-      refetchQueries: [{ query: ALL_EVENTS_QUERY }],
-    }
-  );
+  const [
+    updateEvent,
+    { data: updateData, error: updateError, loading: updateLoading },
+  ] = useMutation(UPDATE_EVENT_MUTATION);
 
+  const { inputs, handleChange, clearForm, resetForm } = useForm(data?.Event);
+  if (loading) return <p>Loading..</p>;
   return (
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
 
-        const res = await createEvent();
-
-        clearForm();
-
-        console.log(data);
-
-        Router.push({
-          pathname: `/event/${res.data.createEvent.id}`
+        const res = await updateEvent({
+          variables: {
+            id: id,
+            name: inputs.name,
+            description: inputs.description,
+            type: inputs.type,
+            hours: inputs.hours,
+          },
         });
+
+        // const res = await createEvent();
+
+        // clearForm();
+
+        // console.log(data);
+
+        // Router.push({
+        //   pathname: `/event/${res.data.createEvent.id}`
+        // });
       }}
     >
-      <DisplayError error={error} />
-      <fieldset disabled={loading} aria-busy={loading}>
+      <DisplayError error={error || updateError} />
+      <fieldset disabled={updateLoading} aria-busy={updateLoading}>
         <label htmlFor="name">
           Name
           <input
@@ -109,12 +128,8 @@ export default function CreateEvent() {
             onChange={handleChange}
           />
         </label>
-        <label htmlFor="image">
-          Image
-          <input type="file" id="image" name="image" onChange={handleChange} />
-        </label>
 
-        <button type="submit">+ Add event</button>
+        <button type="submit">Update event</button>
       </fieldset>
     </Form>
   );
