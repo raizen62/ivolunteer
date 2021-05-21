@@ -1,18 +1,19 @@
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import styled from "styled-components";
-import Event from './Event';
+import { perPage } from "../config";
+import Event from "./Event";
 
 export const ALL_EVENTS_QUERY = gql`
-  query ALL_EVENTS_QUERY {
-    allEvents {
+  query ALL_EVENTS_QUERY($skip: Int = 0, $first: Int) {
+    allEvents(first: $first, skip: $skip) {
       id
       type
       name
       description
       hours
       photo {
-        id 
+        id
         image {
           publicUrlTransformed
         }
@@ -27,9 +28,14 @@ const EventsListStyles = styled.div`
   grid-gap: 60px;
 `;
 
-export default function Events() {
-  const { data, error, loading } = useQuery(ALL_EVENTS_QUERY);
-  console.log( data, error, loading );
+export default function Events({page}) {
+  const { data, error, loading } = useQuery(ALL_EVENTS_QUERY, {
+    variables: {
+      skip: page * perPage - perPage,
+      first: perPage
+    }
+  });
+  console.log(data, error, loading);
 
   if (loading) return <p>Loading..</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -37,7 +43,9 @@ export default function Events() {
   return (
     <div>
       <EventsListStyles>
-        {data.allEvents.map(event => <Event key={event.id} event={event}/>)}
+        {data.allEvents.map((event) => (
+          <Event key={event.id} event={event} />
+        ))}
       </EventsListStyles>
     </div>
   );
