@@ -7,6 +7,20 @@ export const CURRENT_USER_QUERY = gql`
         id
         email
         name
+        activity {
+          id
+          event {
+            id
+            photo {
+              image {
+                publicUrlTransformed
+              }
+            }
+            name
+            hours
+            description
+          }
+        }
       }
     }
   }

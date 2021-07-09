@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Nav from "./Nav";
 import styled from "styled-components";
+import Activity from "./Activity";
 
 const Logo = styled.h1`
   background-color: red;
@@ -46,6 +47,7 @@ export default function Header() {
       <div className="sub-bar">
         <p>Search</p>
       </div>
+      <Activity />
     </HeaderStyles>
   );
 }

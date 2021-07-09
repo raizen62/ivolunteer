@@ -7,7 +7,9 @@ import {
 } from "@keystone-next/keystone/session";
 import { User } from "./schemas/User";
 import { Event } from "./schemas/Event";
+import { Activity } from "./schemas/Activity";
 import { EventImage } from "./schemas/EventImage";
+import { sendPasswordResetEmail } from "./lib/mail";
 
 const databaseURL = process.env.DATABASE_URl;
 
@@ -22,6 +24,11 @@ const { withAuth } = createAuth({
   secretField: "password",
   initFirstItem: {
     fields: ["name", "email", "password"],
+  },
+  passwordResetLink: {
+    async sendToken(args) {
+      await sendPasswordResetEmail(args.token, args.identity);
+    },
   },
 });
 
@@ -40,6 +47,7 @@ export default withAuth({
     User,
     Event,
     EventImage,
+    Activity,
   }),
   ui: {
     // changes this for roles
